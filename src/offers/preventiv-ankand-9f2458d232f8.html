@@ -239,15 +239,81 @@ a{color:var(--pine)}
 :focus-visible{outline:2px solid var(--brass);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
+@page{
+  size:A4 portrait;
+  margin:14mm 15mm 16mm;
+}
+
 @media print{
-  body{background:#fff;color:#000;font-size:10.5pt}
+  /* Ngjyrat e ekranit janë tepër të zbehta mbi letër, dhe shfletuesit nuk i
+     printojnë sfondet. Prandaj tokenët rikthehen në vlera për letër, dhe çdo
+     dallim që mbahej me sfond mbahet me vijë. */
+  :root{
+    --paper:#fff;
+    --surface:#fff;
+    --surface-2:#fff;
+    --ink:#111;
+    --ink-soft:#2b2b2b;
+    --muted:#555;
+    --line:#bbb;
+    --line-strong:#666;
+    --pine:#123527;
+    --brass:#6b5214;
+  }
+
+  body{background:#fff;font-size:9.5pt;line-height:1.45}
   .toolbar{display:none}
   .wrap{max-width:none;padding:0}
-  section{break-inside:avoid;page-break-inside:avoid;padding:1.4rem 0}
-  .masthead{padding-top:0}
-  h1{font-size:30pt}
-  tr.sum .num{font-size:16pt}
-  .tier.pick{background:transparent;border-top:2px solid #000}
+  a{color:inherit;text-decoration:none}
+
+  /* Gjerësia e A4-s bie nën pragun e faqosjes me dy kolona, ndaj shiriti
+     anësor do të mbetej i varur në boshllëk. Në letër rri mbi titull. */
+  section{
+    display:block;
+    padding:5mm 0;
+  }
+  .rail{padding:0 0 1.5mm;font-size:7pt}
+  /* Në ekran teksti rri i ngushtë sepse shiriti anësor e mban në vend. Në
+     letër ai shirit rri sipër, ndaj 118mm do të linte një brez të zbrazët
+     përballë tabelave 180mm. */
+  .body{max-width:140mm}
+  .body.wide{max-width:none}
+
+  .masthead{padding:0 0 4mm;gap:4mm}
+  h1{font-size:23pt;max-width:none}
+  .deck{font-size:10pt;max-width:100mm}
+  .meta{font-size:7.5pt;gap:.3rem 8mm;padding-top:1mm}
+
+  h2{font-size:13.5pt;margin-bottom:2.5mm;break-after:avoid}
+  h3{margin-top:5mm;break-after:avoid}
+  p{orphans:3;widows:3}
+  .note{margin-top:3mm}
+
+  /* Shiritat rrëshqitës nuk ekzistojnë mbi letër: përmbajtja duhet të duket
+     e tëra, dhe kokat e tabelave të përsëriten kur tabela ndahet. */
+  .scroll{overflow:visible;margin:3mm 0}
+  table{font-size:8.5pt}
+  thead{display:table-header-group}
+  tr{break-inside:avoid}
+  td{padding:1.4mm 0}
+  tr.sum .num{font-size:13pt}
+
+  .tiers{grid-template-columns:repeat(3,1fr);margin-top:4mm;break-inside:avoid}
+  .tier{padding:4mm 5mm;border-top:none}
+  .tier:first-child{padding-left:0}
+  .tier + .tier{border-left:1px solid var(--line);border-top:none}
+  .tier.pick{background:transparent;margin-top:0;border-top:2px solid var(--pine)}
+  .tier .price{font-size:15pt}
+  .tier p{font-size:8.5pt}
+
+  ol.steps li,
+  ul.plain li,
+  .phase{break-inside:avoid}
+  ol.steps li{padding:1.4mm 0}
+  ul.plain li{padding:1.4mm 0 1.4mm 1.15rem}
+  .phase{padding:1.8mm 0}
+
+  .closing{margin-top:6mm;padding-top:3mm;font-size:7.5pt}
 }
 </style>
 </head>
@@ -264,10 +330,10 @@ a{color:var(--pine)}
     <h1>Platformë <em>ankandi</em> me blerje direkte</h1>
     <p class="deck">Për shitjen e produkteve dhe shërbimeve me ofertim online, pagesë me kartë dhe dërgesë në adresën e blerësit. Modeli i punës: charitybuzz.com, i përshtatur për tregun shqiptar.</p>
     <div class="meta">
-      <span>Përgatitur për: <b class="fill">&nbsp;</b></span>
+      <span>Përgatitur për: <b>@super.omer</b></span>
       <span>Datë: <b>8 shtator 2026</b></span>
       <span>Oferta vlen: <b>30 ditë</b></span>
-      <span>Nga: <b class="fill">&nbsp;</b></span>
+      <span>Nga: <b>alejdi.xyz</b></span>
     </div>
   </header>
 
