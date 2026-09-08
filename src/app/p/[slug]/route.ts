@@ -121,25 +121,14 @@ function notFound(): Response {
 }
 
 /**
- * Faqja e gabimit tregon edhe cili deploy po shërben dhe sa i gjatë erdhi
- * secili variabël. Pa këtë nuk dallohet dot një ndërtim i vjetër nga një
- * variabël që nuk mbërrin fare te funksioni. Emrat dhe gjatësitë nuk zbulojnë
- * asgjë; vlerat nuk shfaqen kurrë.
+ * Emri i variablit mjafton për ta gjetur shkakun; gjatësitë dhe commit-i i
+ * deploy-it hiqen, se nuk kanë pse të rrinë të dukshme publikisht.
  */
 function misconfigured(what: string): Response {
-  const commit = (readEnv("VERCEL_GIT_COMMIT_SHA") ?? "lokal").slice(0, 7);
-  const report = (["OFFER_SECRET", "OFFER_CODES"] as const)
-    .map((name) => {
-      const value = readEnv(name);
-      return `${name}: ${value === undefined ? "mungon" : `${value.length} karaktere`}`;
-    })
-    .join(" &middot; ");
-
   return privateHtml(
     "<!doctype html><meta charset=utf-8><title>503</title>" +
       `<p>Konfigurim i paplotë: <b>${what}</b> mungon ose nuk lexohet dot.</p>` +
-      "<p>Shtoje te Environment Variables n&euml; mjedisin Production dhe b&euml;j Redeploy.</p>" +
-      `<hr><p><code>${report}</code></p><p><code>deploy: ${commit}</code></p>`,
+      "<p>Shtoje te Environment Variables n&euml; mjedisin Production dhe b&euml;j Redeploy.</p>",
     503,
   );
 }
