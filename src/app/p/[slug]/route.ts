@@ -34,17 +34,28 @@ type Resolved =
   | { ok: false; response: Response };
 
 /**
+ * Lexohet me çelës të llogaritur, jo si `process.env.OFFER_SECRET`. Format e
+ * drejtpërdrejta mund të zëvendësohen me vlerën e kohës së ndërtimit, dhe
+ * variablat e ndjeshëm nuk ekzistojnë atëherë — do të ngurtësoheshin si
+ * `undefined` përgjithmonë.
+ */
+function readEnv(name: string): string | undefined {
+  const value = process.env[name];
+  return value === undefined || value === "" ? undefined : value;
+}
+
+/**
  * Ndan gabimin e konfigurimit nga dokumenti që nuk ekziston. Një slug i
  * panjohur mbetet 404, që të mos zbulohet se cilat dokumente ka; mungesa e
  * variablave kthen 503, që problemi të kuptohet pa hyrë në logje.
  */
 function resolve(slug: string): Resolved {
-  const secret = process.env.OFFER_SECRET;
+  const secret = readEnv("OFFER_SECRET");
   if (!secret || secret.length < 16) {
     return { ok: false, response: misconfigured("OFFER_SECRET") };
   }
 
-  const raw = process.env.OFFER_CODES;
+  const raw = readEnv("OFFER_CODES");
   if (!raw) {
     return { ok: false, response: misconfigured("OFFER_CODES") };
   }
@@ -109,11 +120,26 @@ function notFound(): Response {
   );
 }
 
+/**
+ * Faqja e gabimit tregon edhe cili deploy po shërben dhe sa i gjatë erdhi
+ * secili variabël. Pa këtë nuk dallohet dot një ndërtim i vjetër nga një
+ * variabël që nuk mbërrin fare te funksioni. Emrat dhe gjatësitë nuk zbulojnë
+ * asgjë; vlerat nuk shfaqen kurrë.
+ */
 function misconfigured(what: string): Response {
+  const commit = (readEnv("VERCEL_GIT_COMMIT_SHA") ?? "lokal").slice(0, 7);
+  const report = (["OFFER_SECRET", "OFFER_CODES"] as const)
+    .map((name) => {
+      const value = readEnv(name);
+      return `${name}: ${value === undefined ? "mungon" : `${value.length} karaktere`}`;
+    })
+    .join(" &middot; ");
+
   return privateHtml(
     "<!doctype html><meta charset=utf-8><title>503</title>" +
       `<p>Konfigurim i paplotë: <b>${what}</b> mungon ose nuk lexohet dot.</p>` +
-      "<p>Shtoje te Environment Variables n&euml; mjedisin Production dhe b&euml;j Redeploy.</p>",
+      "<p>Shtoje te Environment Variables n&euml; mjedisin Production dhe b&euml;j Redeploy.</p>" +
+      `<hr><p><code>${report}</code></p><p><code>deploy: ${commit}</code></p>`,
     503,
   );
 }
