@@ -29,22 +29,46 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 ditë
 
 type Ctx = { params: Promise<{ slug: string }> };
 
-function expectedCode(slug: string): string | null {
-  const raw = process.env.OFFER_CODES;
-  if (!raw) return null;
-  try {
-    const map = JSON.parse(raw) as Record<string, unknown>;
-    const code = map[slug];
-    return typeof code === "string" && code.length > 0 ? code : null;
-  } catch {
-    return null;
-  }
-}
+type Resolved =
+  | { ok: true; code: string; signed: string }
+  | { ok: false; response: Response };
 
-function signature(slug: string): string | null {
+/**
+ * Ndan gabimin e konfigurimit nga dokumenti që nuk ekziston. Një slug i
+ * panjohur mbetet 404, që të mos zbulohet se cilat dokumente ka; mungesa e
+ * variablave kthen 503, që problemi të kuptohet pa hyrë në logje.
+ */
+function resolve(slug: string): Resolved {
   const secret = process.env.OFFER_SECRET;
-  if (!secret || secret.length < 16) return null;
-  return createHmac("sha256", secret).update(slug).digest("hex");
+  if (!secret || secret.length < 16) {
+    return { ok: false, response: misconfigured("OFFER_SECRET") };
+  }
+
+  const raw = process.env.OFFER_CODES;
+  if (!raw) {
+    return { ok: false, response: misconfigured("OFFER_CODES") };
+  }
+
+  let map: Record<string, unknown>;
+  try {
+    map = JSON.parse(raw) as Record<string, unknown>;
+  } catch {
+    return {
+      ok: false,
+      response: misconfigured("OFFER_CODES &mdash; nuk lexohet si JSON"),
+    };
+  }
+
+  const code = map[slug];
+  if (typeof code !== "string" || code.length === 0) {
+    return { ok: false, response: notFound() };
+  }
+
+  return {
+    ok: true,
+    code,
+    signed: createHmac("sha256", secret).update(slug).digest("hex"),
+  };
 }
 
 function equals(a: string, b: string): boolean {
@@ -82,6 +106,15 @@ function notFound(): Response {
   return privateHtml(
     "<!doctype html><meta charset=utf-8><title>404</title><p>Faqja nuk u gjet.</p>",
     404,
+  );
+}
+
+function misconfigured(what: string): Response {
+  return privateHtml(
+    "<!doctype html><meta charset=utf-8><title>503</title>" +
+      `<p>Konfigurim i paplotë: <b>${what}</b> mungon ose nuk lexohet dot.</p>` +
+      "<p>Shtoje te Environment Variables n&euml; mjedisin Production dhe b&euml;j Redeploy.</p>",
+    503,
   );
 }
 
@@ -159,12 +192,11 @@ export async function GET(request: Request, ctx: Ctx): Promise<Response> {
   const { slug } = await ctx.params;
   if (!SLUG_PATTERN.test(slug)) return notFound();
 
-  const code = expectedCode(slug);
-  const signed = signature(slug);
-  if (!code || !signed) return notFound();
+  const conf = resolve(slug);
+  if (!conf.ok) return conf.response;
 
   const presented = cookieValue(request.headers.get("cookie"), `offer_${slug}`);
-  if (!presented || !equals(presented, signed)) {
+  if (!presented || !equals(presented, conf.signed)) {
     return privateHtml(gate(slug, false), 401);
   }
 
@@ -180,14 +212,13 @@ export async function POST(request: Request, ctx: Ctx): Promise<Response> {
   const { slug } = await ctx.params;
   if (!SLUG_PATTERN.test(slug)) return notFound();
 
-  const code = expectedCode(slug);
-  const signed = signature(slug);
-  if (!code || !signed) return notFound();
+  const conf = resolve(slug);
+  if (!conf.ok) return conf.response;
 
   const form = await request.formData().catch(() => null);
   const submitted = form ? String(form.get("code") ?? "") : "";
 
-  if (!equals(submitted, code)) {
+  if (!equals(submitted, conf.code)) {
     return privateHtml(gate(slug, true), 401);
   }
 
@@ -196,7 +227,7 @@ export async function POST(request: Request, ctx: Ctx): Promise<Response> {
     status: 303,
     headers: {
       location: `/p/${slug}`,
-      "set-cookie": `offer_${slug}=${signed}; Path=/p/${slug}; Max-Age=${COOKIE_MAX_AGE}; HttpOnly; SameSite=Lax${secure}`,
+      "set-cookie": `offer_${slug}=${conf.signed}; Path=/p/${slug}; Max-Age=${COOKIE_MAX_AGE}; HttpOnly; SameSite=Lax${secure}`,
       "cache-control": "private, no-store, max-age=0",
     },
   });
