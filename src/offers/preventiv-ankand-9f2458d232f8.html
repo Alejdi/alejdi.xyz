@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="sq">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Preventiv – Platformë ankandi me blerje direkte</title>
+<meta name="description" content="Preventiv për ndërtimin e një platforme ankandi online me blerje direkte, pagesë me kartë dhe dërgesë në adresë.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F6F7F4;
+  --surface:#FFFFFF;
+  --surface-2:#EFF1EC;
+  --ink:#12211B;
+  --ink-soft:#4A5550;
+  --muted:#6B7570;
+  --line:#DCE0D8;
+  --line-strong:#B7BEB4;
+  --pine:#1E4B3A;
+  --brass:#8A6A1E;
+  --shell:44rem;
+}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"IBM Plex Sans","Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:66rem;margin:0 auto;padding:0 1.5rem 5rem}
+
+/* ---------- shiriti i printimit ---------- */
+.toolbar{
+  max-width:66rem;margin:0 auto;padding:1.25rem 1.5rem 0;
+  display:flex;justify-content:flex-end;
+}
+.btn{
+  font:inherit;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:600;color:var(--pine);background:transparent;
+  border:1px solid var(--line-strong);padding:.45rem .95rem;
+  cursor:pointer;
+}
+.btn:hover{border-color:var(--pine);background:var(--surface)}
+
+/* ---------- koka ---------- */
+.masthead{
+  border-bottom:1px solid var(--line-strong);
+  padding:2.5rem 0 1.75rem;
+  display:flex;flex-direction:column;gap:1.5rem;
+}
+.eyebrow{
+  font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--pine);font-weight:600;
+}
+h1{
+  font-family:"Bodoni Moda",Georgia,"Times New Roman",serif;
+  font-weight:400;
+  font-size:clamp(2.4rem,6vw,3.9rem);
+  line-height:1.04;
+  letter-spacing:-.01em;
+  margin:0;
+  text-wrap:balance;
+  max-width:16ch;
+}
+h1 em{font-style:italic;color:var(--pine)}
+.deck{font-size:1.08rem;color:var(--ink-soft);max-width:48ch;margin:0}
+.meta{
+  display:flex;flex-wrap:wrap;gap:.4rem 2.4rem;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.76rem;color:var(--muted);
+  padding-top:.5rem;
+}
+.meta b{color:var(--ink);font-weight:500}
+.fill{border-bottom:1px dotted var(--line-strong);min-width:9rem;display:inline-block}
+
+/* ---------- seksionet ---------- */
+section{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:.5rem 2.5rem;
+  padding:2.9rem 0;
+  border-bottom:1px solid var(--line);
+}
+section:last-of-type{border-bottom:none}
+@media (min-width:56rem){
+  section{grid-template-columns:7.5rem minmax(0,1fr)}
+}
+.rail{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);
+  padding-top:.45rem;
+}
+.body{min-width:0;max-width:var(--shell)}
+.body.wide{max-width:none}
+h2{
+  font-family:"Bodoni Moda",Georgia,serif;
+  font-weight:400;
+  font-size:clamp(1.5rem,3.2vw,2rem);
+  line-height:1.15;
+  margin:0 0 .9rem;
+  text-wrap:balance;
+}
+h3{
+  font-size:.82rem;text-transform:uppercase;letter-spacing:.1em;
+  font-weight:600;color:var(--pine);margin:2rem 0 .6rem;
+}
+p{margin:0 0 1rem}
+p:last-child{margin-bottom:0}
+.lede{font-size:1.05rem}
+.note{
+  font-size:.86rem;color:var(--muted);
+  border-left:2px solid var(--line-strong);
+  padding-left:.9rem;margin-top:1.3rem;
+}
+
+/* ---------- listat ---------- */
+ol.steps{list-style:none;margin:0;padding:0;counter-reset:s}
+ol.steps li{
+  counter-increment:s;
+  display:grid;grid-template-columns:2.1rem 1fr;gap:.9rem;
+  padding:.62rem 0;
+  border-top:1px solid var(--line);
+}
+ol.steps li:first-child{border-top:none}
+ol.steps li::before{
+  content:counter(s,decimal-leading-zero);
+  font-family:"Bodoni Moda",Georgia,serif;
+  font-size:1rem;color:var(--brass);
+  line-height:1.6;
+}
+ul.plain{list-style:none;margin:0;padding:0}
+ul.plain li{
+  padding:.42rem 0 .42rem 1.15rem;position:relative;
+  border-top:1px solid var(--line);
+}
+ul.plain li:first-child{border-top:none}
+ul.plain li::before{
+  content:"";position:absolute;left:0;top:1.02em;
+  width:.42rem;height:1px;background:var(--pine);
+}
+
+/* ---------- tabelat ---------- */
+.scroll{overflow-x:auto;margin:1.2rem 0}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+caption{
+  text-align:left;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);padding-bottom:.6rem;
+}
+th{
+  text-align:left;font-weight:600;font-size:.72rem;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--muted);
+  padding:0 0 .5rem;border-bottom:1px solid var(--line-strong);
+  white-space:nowrap;
+}
+td{padding:.62rem 0;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child,th:first-child{padding-right:1.5rem}
+.num{
+  text-align:right;white-space:nowrap;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-variant-numeric:tabular-nums;
+  font-size:.88rem;
+}
+th.num{text-align:right}
+tr.sum td{
+  border-bottom:none;border-top:2px solid var(--line-strong);
+  padding-top:.9rem;font-weight:600;
+}
+tr.sum .num{
+  font-family:"Bodoni Moda",Georgia,serif;
+  font-size:1.5rem;color:var(--brass);font-weight:500;
+}
+td small{display:block;color:var(--muted);font-size:.8rem;line-height:1.45}
+
+/* ---------- paketat ---------- */
+.tiers{display:grid;gap:0;margin-top:1.4rem;border-top:2px solid var(--line-strong)}
+@media (min-width:48rem){
+  .tiers{grid-template-columns:repeat(3,1fr)}
+  .tier + .tier{border-left:1px solid var(--line)}
+}
+.tier{padding:1.4rem 1.3rem 1.5rem}
+.tier:first-child{padding-left:0}
+.tier + .tier{border-top:1px solid var(--line)}
+@media (min-width:48rem){
+  .tier + .tier{border-top:none}
+  .tier.pick{margin-top:-2px;border-top:2px solid var(--pine)}
+}
+.tier.pick{background:var(--surface-2)}
+.tier .name{
+  font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;
+  font-weight:600;color:var(--pine);
+}
+.tier .price{
+  font-family:"Bodoni Moda",Georgia,serif;
+  font-size:2.1rem;line-height:1.1;margin:.35rem 0 .1rem;
+  font-variant-numeric:tabular-nums;
+}
+.tier .lek{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.74rem;color:var(--muted);
+}
+.tier p{font-size:.9rem;color:var(--ink-soft);margin:.85rem 0 0}
+.tag{
+  display:inline-block;margin-top:.9rem;
+  font-size:.68rem;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--brass);border:1px solid var(--brass);
+  padding:.16rem .5rem;
+}
+
+/* ---------- fazat ---------- */
+.phases{display:grid;gap:0;margin-top:.4rem}
+.phase{
+  display:grid;grid-template-columns:5.5rem 1fr;gap:1rem;
+  padding:.75rem 0;border-top:1px solid var(--line);
+}
+.phase:first-child{border-top:none}
+.phase .wk{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.78rem;color:var(--brass);padding-top:.12rem;
+}
+.phase .what b{font-weight:600;display:block}
+.phase .what span{color:var(--ink-soft);font-size:.92rem}
+
+/* ---------- fundi ---------- */
+.closing{
+  margin-top:3rem;padding:2rem 0 0;border-top:2px solid var(--line-strong);
+  font-size:.85rem;color:var(--muted);
+  display:flex;flex-wrap:wrap;gap:1rem 3rem;justify-content:space-between;
+}
+.sign{color:var(--ink)}
+a{color:var(--pine)}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+@media print{
+  body{background:#fff;color:#000;font-size:10.5pt}
+  .toolbar{display:none}
+  .wrap{max-width:none;padding:0}
+  section{break-inside:avoid;page-break-inside:avoid;padding:1.4rem 0}
+  .masthead{padding-top:0}
+  h1{font-size:30pt}
+  tr.sum .num{font-size:16pt}
+  .tier.pick{background:transparent;border-top:2px solid #000}
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="btn" type="button" onclick="window.print()">Printo ose ruaj si PDF</button>
+</div>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">Preventiv &middot; Ofertë pune</div>
+    <h1>Platformë <em>ankandi</em> me blerje direkte</h1>
+    <p class="deck">Për shitjen e produkteve dhe shërbimeve me ofertim online, pagesë me kartë dhe dërgesë në adresën e blerësit. Modeli i punës: charitybuzz.com, i përshtatur për tregun shqiptar.</p>
+    <div class="meta">
+      <span>Përgatitur për: <b class="fill">&nbsp;</b></span>
+      <span>Datë: <b>8 shtator 2026</b></span>
+      <span>Oferta vlen: <b>30 ditë</b></span>
+      <span>Nga: <b class="fill">&nbsp;</b></span>
+    </div>
+  </header>
+
+  <section>
+    <div class="rail">Përmbledhje</div>
+    <div class="body">
+      <h2>Çfarë ndërtohet</h2>
+      <p class="lede">Një faqe ku ju hidhni një artikull në ankand &mdash; mall ose shërbim, nuk ka rëndësi &mdash; dhe njerëzit ofrojnë nga telefoni apo kompjuteri. Kush mbetet me ofertën më të lartë, paguan aty për aty me kartë, lë adresën, dhe ju e nisni porosinë.</p>
+      <p>Nëse doni ta shisni një gjë pa ankand, i vendosni çmim fiks dhe blihet menjëherë, si në çdo dyqan online. Të dyja mënyrat punojnë në të njëjtën faqe, me të njëjtën arkë dhe të njëjtin panel.</p>
+      <p>E gjithë puna bëhet nga një panel administrimi ku hyni vetëm ju, ose kujt t'i jepni të drejtën. Nuk ka nevojë të preket kod për të shtuar një artikull, për të ndryshuar një çmim apo për të nisur një ankand të ri.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="rail">01 &middot; Blerësi</div>
+    <div class="body">
+      <h2>Rruga e blerësit, hap pas hapi</h2>
+      <ol class="steps">
+        <li>Hyn në faqe dhe shikon artikujt e hapur &mdash; foto, përshkrim, oferta aktuale, koha që ka mbetur.</li>
+        <li>Krijon llogari me email dhe fjalëkalim, ose hyn direkt me Google.</li>
+        <li>Vendos ofertën. Sistemi i tregon vetë sa është hapi i lejuar i radhës.</li>
+        <li>Nëse e kalon dikush tjetër, i vjen njoftim me email ose SMS.</li>
+        <li>Koha mbaron. Fiton oferta më e lartë, me kusht që të ketë kaluar çmimin e rezervës.</li>
+        <li>Paguan me kartë brenda 48 orëve dhe plotëson adresën e dërgesës.</li>
+        <li>Merr faturën dhe numrin e gjurmimit sapo porosia niset.</li>
+      </ol>
+      <p class="note">Për blerje direkte hapat 3&ndash;5 nuk ekzistojnë fare: shtyp <b>Blej tani</b>, paguan, dhe puna mbaron aty.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="rail">02 &middot; Motori</div>
+    <div class="body">
+      <h2>Si funksionon ankandi nga brenda</h2>
+      <p>Kjo është pjesa ku shumica e faqeve të lira gabojnë. Ankandi nuk është thjesht një formular me numër &mdash; duhen rregulla, përndryshe ofertat përplasen me njëra-tjetrën.</p>
+
+      <div class="scroll">
+        <table>
+          <caption>Hapat e ofertës (të ndryshueshëm nga paneli)</caption>
+          <thead>
+            <tr><th>Oferta aktuale</th><th class="num">Hapi minimal</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>deri 100 &euro;</td><td class="num">5 &euro;</td></tr>
+            <tr><td>100 &ndash; 500 &euro;</td><td class="num">10 &euro;</td></tr>
+            <tr><td>500 &ndash; 2.000 &euro;</td><td class="num">25 &euro;</td></tr>
+            <tr><td>mbi 2.000 &euro;</td><td class="num">100 &euro;</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Rregullat që përfshihen</h3>
+      <ul class="plain">
+        <li><b>Çmim rezervë i fshehur.</b> Nëse nuk arrihet, artikulli nuk shitet dhe askush nuk detyrohet të paguajë.</li>
+        <li><b>Ofertë automatike.</b> Blerësi lë kufirin më të lartë që pranon, dhe sistemi ofron vetë sa duhet, hap pas hapi.</li>
+        <li><b>Mbrojtje nga ofertat e sekondës së fundit.</b> Nëse dikush ofron në 30 sekondat e fundit, koha shtyhet edhe 2 minuta. Kështu nuk e fiton artikullin thjesht kush ka internet më të shpejtë.</li>
+        <li><b>Paraautorizim i kartës</b> për artikujt mbi një vlerë që e caktoni ju &mdash; bllokohet një shumë e vogël si garanci që oferta është serioze.</li>
+        <li><b>Ora e serverit</b>, jo ora e telefonit të blerësit. Numëruesi rifreskohet vetë, pa e ringarkuar faqen.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="rail">03 &middot; Shërbimet</div>
+    <div class="body">
+      <h2>Shërbimet, jo vetëm mallrat</h2>
+      <p>Shërbimi shitet njësoj si malli, vetëm se nuk ka pako për të dërguar. Blerësi merr në email një kupon me kod unik. Ju e shlyeni kodin kur e kryeni punën, nga paneli ose me skanim.</p>
+      <p>Për shërbimet që kërkojnë takim &mdash; një seancë, një konsulencë, një ditë pune &mdash; shtohet edhe një kalendar me oraret e lira, që blerësi e zgjedh vetë pas pagesës.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="rail">04 &middot; Paneli</div>
+    <div class="body">
+      <h2>Çfarë kontrolloni ju</h2>
+      <ul class="plain">
+        <li>Shtoni artikuj: foto, përshkrim, kategori, çmim fillestar, rezervë, datë dhe orë mbyllëse.</li>
+        <li>Shihni ofertat në kohë reale, kush ofroi dhe kur; anuloni një ofertë të dyshimtë ose bllokoni një llogari.</li>
+        <li>Porositë: të paguara, të papaguara, të anuluara, të dërguara.</li>
+        <li>Adresat e dërgesës, zonat dhe tarifat (Shkodër, Tiranë, rrethe, jashtë shtetit).</li>
+        <li>Klientët dhe historiku i tyre i blerjeve.</li>
+        <li>Raporte: sa u shit muaj pas muaji, cili artikull mori më shumë oferta, sa mbetën pa u shitur.</li>
+        <li>Faqet me tekst: rreth nesh, kushtet, pyetjet e shpeshta &mdash; i ndryshoni vetë.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="rail">05 &middot; Afati</div>
+    <div class="body">
+      <h2>Fazat e punës</h2>
+      <div class="phases">
+        <div class="phase"><div class="wk">Java 1</div><div class="what"><b>Përcaktimi i detajeve</b><span>Kategoritë, rregullat e ankandit, harta e faqes, skicat e para.</span></div></div>
+        <div class="phase"><div class="wk">Java 2&ndash;3</div><div class="what"><b>Dizajni</b><span>Faqja kryesore, listimi, faqja e artikullit, arka, paneli. Versioni për telefon për secilën.</span></div></div>
+        <div class="phase"><div class="wk">Java 4&ndash;6</div><div class="what"><b>Baza dhe motori i ankandit</b><span>Llogaritë, artikujt, ofertat, numëruesi, rezerva, oferta automatike.</span></div></div>
+        <div class="phase"><div class="wk">Java 7&ndash;8</div><div class="what"><b>Pagesat, dërgesat, njoftimet</b><span>Lidhja me bankën, arka, adresat, emailet dhe SMS-të.</span></div></div>
+        <div class="phase"><div class="wk">Java 9</div><div class="what"><b>Paneli dhe raportet</b></div></div>
+        <div class="phase"><div class="wk">Java 10</div><div class="what"><b>Ankand prove</b><span>Provohet me njerëz realë dhe me shuma të vogla reale, para se të dalë publikisht.</span></div></div>
+        <div class="phase"><div class="wk">Java 11&ndash;12</div><div class="what"><b>Rregullime, lansim, trajnim</b><span>Dy orë trajnim me ju ose me personin që do të mbajë artikujt.</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="rail">06 &middot; Kostoja</div>
+    <div class="body wide">
+      <h2>Kostoja e ndërtimit, e ndarë sipas zërave</h2>
+      <div class="scroll">
+        <table>
+          <caption>Paketa e plotë &middot; çmime pa TVSH</caption>
+          <thead>
+            <tr><th>Puna</th><th class="num">Çmimi</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Analizë, harta e faqes, skica<small>Takime, rregullat e ankandit, struktura e kategorive</small></td><td class="num">130 &euro;</td></tr>
+            <tr><td>Dizajni i pamjeve kryesore<small>5 pamje plus versioni për telefon</small></td><td class="num">300 &euro;</td></tr>
+            <tr><td>Baza e sistemit<small>Llogari, hyrje, role, siguri, mbrojtje nga sulmet e zakonshme</small></td><td class="num">260 &euro;</td></tr>
+            <tr><td>Motori i ankandit<small>Ofertat, hapat, numëruesi, rezerva, oferta automatike, shtyrja e kohës</small></td><td class="num">580 &euro;</td></tr>
+            <tr><td>Blerja direkte dhe shporta</td><td class="num">220 &euro;</td></tr>
+            <tr><td>Moduli i shërbimeve<small>Kuponë me kod, shlyerje, kalendar takimesh</small></td><td class="num">180 &euro;</td></tr>
+            <tr><td>Pagesa me kartë dhe faturimi<small>Lidhja me bankën, arka, konfirmimet, rimbursimet</small></td><td class="num">310 &euro;</td></tr>
+            <tr><td>Adresat dhe dërgesa<small>Zonat, tarifat, numri i gjurmimit</small></td><td class="num">180 &euro;</td></tr>
+            <tr><td>Njoftimet me email dhe SMS</td><td class="num">160 &euro;</td></tr>
+            <tr><td>Paneli i administrimit dhe raportet</td><td class="num">350 &euro;</td></tr>
+            <tr><td>Faqet ligjore<small>Kushtet e ankandit, privatësia, cookie-t</small></td><td class="num">110 &euro;</td></tr>
+            <tr><td>Testim, lansim, trajnim</td><td class="num">220 &euro;</td></tr>
+            <tr class="sum"><td>Gjithsej</td><td class="num">3.000 &euro;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Rreth <b>294.000 lekë</b> me kursin e sotëm (1 &euro; &asymp; 98 lekë). Çmimet janë pa TVSH.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="rail">07 &middot; Paketat</div>
+    <div class="body wide">
+      <h2>Tri mënyra për të filluar</h2>
+      <p>Nëse nuk doni ta nisni menjëherë me gjithçka, filloni me paketën e vogël dhe shtoni më vonë. Baza është e njëjtë, nuk ka nevojë të ndërtohet nga e para herën e dytë.</p>
+      <div class="tiers">
+        <div class="tier">
+          <div class="name">Bazë</div>
+          <div class="price">2.000 &euro;</div>
+          <div class="lek">&asymp; 196.000 lekë &middot; 6&ndash;7 javë</div>
+          <p>Ankandi, blerja direkte, pagesa me kartë, adresat, njoftimet me email dhe një panel i thjeshtë. Pa shërbime me kalendar, pa SMS, pa raporte, pa paraautorizim karte.</p>
+        </div>
+        <div class="tier pick">
+          <div class="name">E plotë</div>
+          <div class="price">3.000 &euro;</div>
+          <div class="lek">&asymp; 294.000 lekë &middot; 10&ndash;12 javë</div>
+          <p>E gjithë lista e tabelës më sipër, nga analiza deri te trajnimi. Kjo është zgjidhja që ka kuptim nëse puna merret seriozisht.</p>
+          <span class="tag">E rekomanduar</span>
+        </div>
+        <div class="tier">
+          <div class="name">Me shtesa</div>
+          <div class="price">4.000 &euro;</div>
+          <div class="lek">&asymp; 392.000 lekë &middot; 13&ndash;15 javë</div>
+          <p>Paketa e plotë, plus fiskalizimi, gjuha e dytë (anglisht) dhe aplikacioni për telefon që instalohet direkt nga faqja.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="rail">08 &middot; Shtesat</div>
+    <div class="body wide">
+      <div class="scroll">
+        <table>
+          <caption>Shtesa opsionale, kur t'ju duhen</caption>
+          <thead><tr><th>Shtesa</th><th class="num">Çmimi</th></tr></thead>
+          <tbody>
+            <tr><td>Fiskalizim<small>Lidhja me sistemin e faturës elektronike, që fatura të dalë e rregullt</small></td><td class="num">350 &euro;</td></tr>
+            <tr><td>Gjuha e dytë (anglisht)<small>Për blerës jashtë Shqipërisë</small></td><td class="num">250 &euro;</td></tr>
+            <tr><td>Aplikacion për telefon<small>Instalohet nga faqja, me njoftime që bien në ekran kur ju kalojnë ofertën</small></td><td class="num">400 &euro;</td></tr>
+            <tr><td>Ankand live me video<small>Prezantues në kohë reale, si në sallë</small></td><td class="num">850 &euro;</td></tr>
+            <tr><td>Lidhje me programin e kontabilitetit</td><td class="num">nga 250 &euro;</td></tr>
+            <tr><td>Fotografim dhe përgatitje e 30 artikujve të parë</td><td class="num">200 &euro;</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="rail">09 &middot; Mujore</div>
+    <div class="body wide">
+      <h2>Sa kushton mbajtja e faqes në punë</h2>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Zëri</th><th class="num">Në muaj</th></tr></thead>
+          <tbody>
+            <tr><td>Domain (.com ose .al)</td><td class="num">1&ndash;2 &euro;</td></tr>
+            <tr><td>Serveri dhe hostimi</td><td class="num">18 &euro;</td></tr>
+            <tr><td>Kopje rezervë ditore</td><td class="num">8 &euro;</td></tr>
+            <tr><td>Email njoftimesh<small>Falas deri në 3.000 në muaj, më pas me pagesë</small></td><td class="num">0&ndash;20 &euro;</td></tr>
+            <tr><td>SMS<small>Paguhen sa dërgohen, rreth 4 lekë copa</small></td><td class="num">sipas përdorimit</td></tr>
+            <tr><td>Certifikatë sigurie (SSL)</td><td class="num">falas</td></tr>
+            <tr><td>Monitorim dhe përditësime sigurie</td><td class="num">5 &euro;</td></tr>
+            <tr class="sum"><td>Gjithsej, afërsisht</td><td class="num">35&ndash;55 &euro;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Mirëmbajtja opsionale &mdash; ndryshime të vogla, mbështetje, deri në 4 orë punë në muaj &mdash; <b>90 &euro; në muaj</b>. Nuk është e detyrueshme; mund të merret kur duhet, me orë.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="rail">10 &middot; Pagesat</div>
+    <div class="body wide">
+      <h2>Komisionet e kartës</h2>
+      <p>Këto nuk i marr unë, i merr banka ose shërbimi i pagesave. I vendos këtu që ta dini që në fillim sa ju mbetet në dorë nga çdo shitje.</p>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Mënyra</th><th class="num">Hapja</th><th class="num">Për transaksion</th></tr></thead>
+          <tbody>
+            <tr><td>Bankë shqiptare<small>BKT, Credins, Raiffeisen &mdash; kërkon NIPT dhe llogari biznesi</small></td><td class="num">100&ndash;200 &euro;</td><td class="num">1,8% &ndash; 2,5%</td></tr>
+            <tr><td>Stripe<small>Kërkon subjekt të regjistruar në BE</small></td><td class="num">0 &euro;</td><td class="num">1,5% + 0,25 &euro;</td></tr>
+            <tr><td>PayPal<small>Si mundësi e dytë, sidomos për blerës jashtë vendit</small></td><td class="num">0 &euro;</td><td class="num">3,4% + 0,35 &euro;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Këshilla ime: filloni me bankën shqiptare, sepse blerësi vendas i beson kartës së vet dhe pagesës në lekë. Stripe shtohet më vonë, nëse dalin blerës jashtë vendit.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="rail">11 &middot; Jashtë</div>
+    <div class="body">
+      <h2>Çfarë nuk përfshihet në çmim</h2>
+      <ul class="plain">
+        <li>Tarifat e bankës dhe komisionet e kartës.</li>
+        <li>Fotot dhe tekstet e produkteve, përveç rastit kur merret shtesa e fotografimit.</li>
+        <li>Reklamat në Google, Instagram ose Facebook, si dhe buxheti i tyre.</li>
+        <li>Regjistrimi i biznesit, NIPT-i dhe konsulenca ligjore për kushtet e ankandit.</li>
+        <li>Përkthimet profesionale, nëse doni tekste të gatshme në gjuhë tjetër.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="rail">12 &middot; Kushtet</div>
+    <div class="body">
+      <h2>Si paguhet puna</h2>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Kur</th><th class="num">Sa</th><th class="num">Vlera</th></tr></thead>
+          <tbody>
+            <tr><td>Në nisje, para se të fillojë puna</td><td class="num">30%</td><td class="num">900 &euro;</td></tr>
+            <tr><td>Kur dorëzohen dizajni dhe ankandi i provës</td><td class="num">40%</td><td class="num">1.200 &euro;</td></tr>
+            <tr><td>Ditën e lansimit</td><td class="num">30%</td><td class="num">900 &euro;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><b>Garanci 60 ditë.</b> Çdo gabim që vjen nga puna ime brenda dy muajve pas lansimit rregullohet falas. Ndryshimet e reja, që nuk kanë qenë pjesë e marrëveshjes, paguhen veçmas &mdash; 20 &euro; ora, dhe gjithmonë me çmim të dakordësuar paraprakisht.</p>
+      <p class="note">Kodi dhe llogaritë e serverit janë tuajat që nga dita e parë. Nuk mbetem unë në mes; nëse doni të ndërroni bashkëpunëtor, nuk keni asnjë pengesë.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="rail">13 &middot; Vijimi</div>
+    <div class="body">
+      <h2>Hapi tjetër</h2>
+      <p>Një takim gjysmë ore, sa për të mbyllur listën e kategorive dhe rregullat e ankandit. Nëse i keni gati këto katër gjëra, kursejmë një javë punë:</p>
+      <ol class="steps">
+        <li>Lista e kategorive që mendoni të shisni, mall dhe shërbim.</li>
+        <li>Sa artikuj mendoni të hidhni në muaj, afërsisht.</li>
+        <li>Si i dërgoni mallrat &mdash; postë, korrier, dorazi &mdash; dhe në cilat zona.</li>
+        <li>Me cilën bankë e keni llogarinë e biznesit.</li>
+      </ol>
+      <p style="margin-top:1.3rem">Pas takimit ju dërgoj kontratën me afatet e sakta, dhe puna nis brenda javës.</p>
+    </div>
+  </section>
+
+  <div class="closing">
+    <span class="sign">Preventiv orientues. Çmimet ndryshojnë vetëm nëse ndryshon vetë kërkesa.</span>
+    <span>Vlen deri më 8 tetor 2026</span>
+  </div>
+
+</div>
+</body>
+</html>
