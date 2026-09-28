@@ -36,6 +36,22 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    id: "agplayer",
+    name: "AG Player",
+    tagline: "One IPTV player for Android TV, phones and Windows.",
+    description:
+      "An IPTV player shipped as an Android TV app, an Android mobile app and a Windows desktop app. It has live TV with an XMLTV programme guide, movies and series, per-device activation, a parental PIN and 8 languages. It runs on a Supabase backend with PayPal and crypto checkout, a customer portal, and an admin panel with live chat and error reports.",
+    role: "Founder / Full-Stack Developer",
+    status: "live",
+    statusLabel: "Live",
+    tech: ["Supabase", "Capacitor", "Electron", "HLS.js", "PostgreSQL", "JavaScript"],
+    year: "2026",
+    accent: "#1e7bff",
+    url: "https://agplayer.xyz",
+    featured: true,
+    previewImage: "/images/projects/agplayer.png",
+  },
+  {
     id: "italy-3dgs",
     name: "3D Gaussian Splatting Real Estate Tours",
     tagline: "Turning Italian listings into walkable 3D experiences.",
