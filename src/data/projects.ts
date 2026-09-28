@@ -49,7 +49,6 @@ export const projects: Project[] = [
     accent: "#1e7bff",
     url: "https://agplayer.xyz",
     featured: true,
-    previewImage: "/images/projects/agplayer.png",
   },
   {
     id: "italy-3dgs",
