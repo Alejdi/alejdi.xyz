@@ -162,6 +162,47 @@ export function chipShape(count: number): Float32Array {
   });
 }
 
+export function tvShape(count: number): Float32Array {
+  return sampleCanvas("tv", count, 2.8, 0.4, (ctx, w) => {
+    const cx = w / 2;
+    // antennas with tips
+    ctx.lineWidth = 12;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(cx - 8, 66);
+    ctx.lineTo(cx - 72, 22);
+    ctx.moveTo(cx + 8, 66);
+    ctx.lineTo(cx + 72, 22);
+    ctx.stroke();
+    for (const dx of [-72, 72]) {
+      ctx.beginPath();
+      ctx.arc(cx + dx, 22, 12, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // screen bezel
+    ctx.beginPath();
+    ctx.roundRect(cx - 156, 66, 312, 178, 30);
+    ctx.fill();
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.beginPath();
+    ctx.roundRect(cx - 132, 90, 264, 130, 14);
+    ctx.fill();
+    ctx.globalCompositeOperation = "source-over";
+    // play button
+    ctx.beginPath();
+    ctx.moveTo(cx - 30, 120);
+    ctx.lineTo(cx + 42, 155);
+    ctx.lineTo(cx - 30, 190);
+    ctx.closePath();
+    ctx.fill();
+    // stand
+    ctx.fillRect(cx - 20, 244, 40, 16);
+    ctx.beginPath();
+    ctx.roundRect(cx - 88, 258, 176, 16, 8);
+    ctx.fill();
+  });
+}
+
 export function qrShape(count: number): Float32Array {
   return sampleCanvas("qr", count, 2.6, 0.35, (ctx, w, h) => {
     const size = 220;
@@ -367,6 +408,8 @@ export function shapeForStop(key: string, heroText: string, count: number): Floa
       return galaxyShape(count);
     case "ai-training":
       return chipShape(count);
+    case "agplayer":
+      return tvShape(count);
     case "italy-3dgs":
       return houseShape(count);
     case "randochat":
