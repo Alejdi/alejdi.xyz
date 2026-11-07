@@ -15,7 +15,7 @@ type ExperienceContextValue = {
   closeProject: () => void;
   registerScrollApi: (api: ScrollApi) => void;
   getScrollApi: () => ScrollApi;
-  jumpToStop: (key: string) => void;
+  jumpToStop: (key: string, behavior?: ScrollBehavior) => void;
   ready: boolean;
   setReady: (v: boolean) => void;
   /** Stops whose concept art loaded — the particle field frames these instead of forming an icon. */
@@ -42,13 +42,13 @@ export function ExperienceProvider({ children }: { children: ReactNode }) {
   }, []);
   const hasArt = useCallback((key: string) => artRef.current.has(key), []);
 
-  const jumpToStop = useCallback((key: string) => {
+  const jumpToStop = useCallback((key: string, behavior: ScrollBehavior = "smooth") => {
     const { el, pages } = scrollApiRef.current;
     if (!el) return;
     const stop = stopByKey(key);
     const targetOffset = (stop.start + stop.length / 2) / pages;
     const max = el.scrollHeight - el.clientHeight;
-    el.scrollTo({ top: Math.max(0, targetOffset) * max, behavior: "smooth" });
+    el.scrollTo({ top: Math.max(0, targetOffset) * max, behavior });
   }, []);
 
   return (

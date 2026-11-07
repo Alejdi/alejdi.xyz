@@ -2,17 +2,24 @@
 
 import { useEffect, useRef } from "react";
 import { PAGES, STOPS } from "@/data/journey";
+import { featuredProjects } from "@/data/projects";
 import { useExperience } from "@/lib/experience-context";
 
-const MARKERS = [
+const firstProject = STOPS.find((s) => s.kind === "project")!;
+const flagship = featuredProjects.find((p) => p.flagship);
+const flagshipStop = flagship ? STOPS.find((s) => s.key === flagship.id) : undefined;
+const workStop = STOPS.find((s) => s.kind === "project" && s.key !== flagshipStop?.key) ?? firstProject;
+
+type Marker = { label: string; jumpKey: string; at: number; color?: string };
+
+const MARKERS: Marker[] = [
   { label: "Hero", jumpKey: "hero", at: 0 },
   { label: "About", jumpKey: "about", at: STOPS.find((s) => s.key === "about")!.start },
   { label: "Skills", jumpKey: "skills", at: STOPS.find((s) => s.key === "skills")!.start },
-  {
-    label: "Work",
-    jumpKey: STOPS.find((s) => s.kind === "project")!.key,
-    at: STOPS.find((s) => s.kind === "project")!.start,
-  },
+  ...(flagship && flagshipStop
+    ? [{ label: flagship.name, jumpKey: flagshipStop.key, at: flagshipStop.start, color: flagship.accent }]
+    : []),
+  { label: "Work", jumpKey: workStop.key, at: workStop.start },
   { label: "Contact", jumpKey: "contact", at: STOPS.find((s) => s.key === "contact")!.start },
 ];
 
@@ -66,7 +73,7 @@ export default function ScrollHUD() {
             aria-label={`Jump to ${m.label}`}
             title={m.label}
             className="relative z-10 h-2 w-2 rounded-full bg-bone-dim transition-all"
-            style={{ opacity: 0.4 }}
+            style={{ opacity: 0.4, ...(m.color ? { background: m.color, boxShadow: `0 0 10px ${m.color}` } : {}) }}
           />
         ))}
       </div>

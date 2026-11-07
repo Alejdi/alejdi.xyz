@@ -10,6 +10,11 @@
   --line: rgba(243, 241, 234, 0.1);
 }
 
+/* Short viewports (small laptops, landscape phones): pinned panels tighten up so they never hit the nav. */
+@custom-variant short (@media (max-height: 760px));
+/* Phones turned sideways: every vertical pixel goes to the film. */
+@custom-variant squat (@media (max-height: 520px) and (orientation: landscape));
+
 @theme inline {
   --color-ink: var(--ink);
   --color-ink-raised: var(--ink-raised);
@@ -124,11 +129,68 @@ body {
   animation-play-state: paused;
 }
 
+/* Flagship card: an accent spotlight that follows the cursor, plus a lit border under it. */
+.flagship-spotlight {
+  background: radial-gradient(
+    380px circle at var(--mx, 70%) var(--my, 0%),
+    color-mix(in srgb, var(--accent) 16%, transparent),
+    transparent 60%
+  );
+  transition: opacity 0.4s;
+}
+.flagship-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    260px circle at var(--mx, 70%) var(--my, 0%),
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    transparent 70%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  50% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  51% {
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+.flagship-scroll-cue {
+  animation: scroll-cue 1.6s ease-in-out infinite;
+}
+
+/* Spec sheet rows: label, dotted leader, value — like a drawing's title block. */
+.spec-leader {
+  flex: 1;
+  min-width: 1.5rem;
+  border-bottom: 1px dotted var(--line);
+  transform: translateY(-0.3em);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .grain-overlay {
+  .grain-overlay,
+  .flagship-scroll-cue {
     animation: none;
   }
 }

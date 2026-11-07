@@ -277,6 +277,168 @@ export function skylineShape(count: number): Float32Array {
   });
 }
 
+/* ----------------------- Preventiv (flagship story) ---------------------- */
+
+/** The Preventiv mark: a section box with a "P" and a dimension tick, from the brand's 22-unit grid. */
+export function preventivMarkShape(count: number): Float32Array {
+  return sampleCanvas("preventiv:mark", count, 2.75, 0.35, (ctx, w, h) => {
+    const k = 12.6;
+    const ox = w / 2 - 11 * k;
+    const oy = h / 2 - 11 * k;
+    ctx.save();
+    ctx.translate(ox, oy);
+    ctx.scale(k, k);
+    ctx.lineJoin = "round";
+    // frame
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(1.75, 1.75, 18.5, 18.5, 2);
+    ctx.stroke();
+    // P
+    ctx.stroke(new Path2D("M6 15.5V6.5h5.25a3 3 0 0 1 0 6H6"));
+    // dimension tick
+    ctx.lineWidth = 1.25;
+    ctx.stroke(new Path2D("M14.5 17.25h3.75M14.5 16v2.5M18.25 16v2.5"));
+    ctx.restore();
+  });
+}
+
+/**
+ * Step 1 — picking the industry: a list of trades with one row ticked and
+ * framed. Big, simple strokes: detail under ~10px is lost to particle drift.
+ */
+export function industriesShape(count: number): Float32Array {
+  return sampleCanvas("preventiv:industries", count, 2.9, 0.35, (ctx, w, h) => {
+    const rowH = 64;
+    const rows = [176, 132, 196, 150];
+    const picked = 1;
+    const listW = 290;
+    const x = w / 2 - listW / 2;
+    const y0 = h / 2 - (rows.length * rowH) / 2;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    rows.forEach((len, i) => {
+      const cy = y0 + i * rowH + rowH / 2;
+      const box = 40;
+      const bx = x + 18;
+      if (i === picked) {
+        // highlight frame around the chosen row
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.roundRect(x - 4, cy - rowH / 2 + 3, listW + 8, rowH - 6, 16);
+        ctx.stroke();
+        // ticked box
+        ctx.beginPath();
+        ctx.roundRect(bx, cy - box / 2, box, box, 8);
+        ctx.fill();
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.lineWidth = 7;
+        ctx.beginPath();
+        ctx.moveTo(bx + 10, cy + 1);
+        ctx.lineTo(bx + 17, cy + 9);
+        ctx.lineTo(bx + 30, cy - 8);
+        ctx.stroke();
+        ctx.globalCompositeOperation = "source-over";
+      } else {
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.roundRect(bx, cy - box / 2, box, box, 10);
+        ctx.stroke();
+      }
+      // the trade's name
+      ctx.lineWidth = i === picked ? 13 : 9;
+      ctx.beginPath();
+      ctx.moveTo(bx + box + 22, cy);
+      ctx.lineTo(bx + box + 22 + len - 60, cy);
+      ctx.stroke();
+    });
+  });
+}
+
+/** Step 2 — the estimate: an A4 sheet with chapters, priced rows and a totals bar. */
+export function estimateShape(count: number): Float32Array {
+  return sampleCanvas("preventiv:estimate", count, 2.9, 0.35, (ctx, w, h) => {
+    const sw = 206;
+    const sh = 282;
+    const x = w / 2 - sw / 2;
+    const y = h / 2 - sh / 2;
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    ctx.roundRect(x, y, sw, sh, 10);
+    ctx.stroke();
+    // header: mark + "OFFER" + number
+    ctx.fillRect(x + 20, y + 20, 26, 26);
+    ctx.fillRect(x + sw - 86, y + 22, 66, 9);
+    ctx.fillRect(x + sw - 60, y + 37, 40, 5);
+    ctx.fillRect(x + 20, y + 58, sw - 40, 3);
+    // rows: description bar + amount bar, chapters slightly heavier
+    const rows: Array<[number, boolean]> = [
+      [108, true],
+      [92, false],
+      [74, false],
+      [118, true],
+      [84, false],
+      [100, false],
+      [66, false],
+    ];
+    rows.forEach(([len, chapter], i) => {
+      const ry = y + 76 + i * 22;
+      const thick = chapter ? 7 : 5;
+      ctx.fillRect(x + (chapter ? 20 : 30), ry, len - (chapter ? 0 : 10), thick);
+      ctx.fillRect(x + sw - 20 - (chapter ? 44 : 34), ry, chapter ? 44 : 34, thick);
+    });
+    // totals bar
+    ctx.beginPath();
+    ctx.roundRect(x + 20, y + sh - 52, sw - 40, 32, 7);
+    ctx.fill();
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.fillRect(x + 32, y + sh - 39, 52, 6);
+    ctx.fillRect(x + sw - 94, y + sh - 42, 62, 12);
+    ctx.globalCompositeOperation = "source-over";
+  });
+}
+
+/** Step 3 — accepted on the client's phone: a check, a signature and the accept button. */
+export function acceptedShape(count: number): Float32Array {
+  return sampleCanvas("preventiv:accepted", count, 2.9, 0.35, (ctx, w, h) => {
+    const pw = 150;
+    const ph = 278;
+    const x = w / 2 - pw / 2;
+    const y = h / 2 - ph / 2;
+    const cx = w / 2;
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.roundRect(x, y, pw, ph, 26);
+    ctx.stroke();
+    // dynamic-island pill
+    ctx.beginPath();
+    ctx.roundRect(cx - 24, y + 14, 48, 12, 6);
+    ctx.fill();
+    // one bold check: at particle resolution a ring around it reads as an eye
+    ctx.lineWidth = 17;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.beginPath();
+    ctx.moveTo(cx - 36, y + 104);
+    ctx.lineTo(cx - 10, y + 128);
+    ctx.lineTo(cx + 38, y + 74);
+    ctx.stroke();
+    // signature
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(cx - 46, y + 188);
+    ctx.bezierCurveTo(cx - 34, y + 160, cx - 22, y + 204, cx - 8, y + 180);
+    ctx.bezierCurveTo(cx + 4, y + 158, cx + 10, y + 200, cx + 24, y + 182);
+    ctx.bezierCurveTo(cx + 32, y + 172, cx + 40, y + 178, cx + 48, y + 174);
+    ctx.stroke();
+    ctx.fillRect(cx - 50, y + 200, 100, 3);
+    // accept button
+    ctx.beginPath();
+    ctx.roundRect(x + 18, y + ph - 54, pw - 36, 30, 15);
+    ctx.fill();
+  });
+}
+
 export function sphereShape(count: number): Float32Array {
   const hit = cache.get("sphere");
   if (hit) return hit;
@@ -406,6 +568,15 @@ export function shapeForStop(key: string, heroText: string, count: number): Floa
       return sphereShape(count);
     case "skills":
       return galaxyShape(count);
+    case "preventiv":
+    case "preventiv#0":
+      return preventivMarkShape(count);
+    case "preventiv#1":
+      return industriesShape(count);
+    case "preventiv#2":
+      return estimateShape(count);
+    case "preventiv#3":
+      return acceptedShape(count);
     case "ai-training":
       return chipShape(count);
     case "agplayer":

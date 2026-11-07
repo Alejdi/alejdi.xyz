@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import Nav from "@/components/Nav";
 import ScrollHUD from "@/components/ScrollHUD";
 import ProjectModal from "@/components/ProjectModal";
+import DeepLink from "@/components/DeepLink";
 import CanvasErrorBoundary from "@/components/three/CanvasErrorBoundary";
 import { ExperienceProvider, useExperience } from "@/lib/experience-context";
 
@@ -36,6 +37,7 @@ export default function Home() {
           <Scene />
           <Nav />
           <ScrollHUD />
+          <DeepLink />
         </CanvasErrorBoundary>
       </div>
     </ExperienceProvider>

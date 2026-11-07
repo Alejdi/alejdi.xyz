@@ -14,6 +14,7 @@ import HeroWaypoint from "./HeroWaypoint";
 import AboutWaypoint from "./AboutWaypoint";
 import SkillsWaypoint from "./SkillsWaypoint";
 import ProjectWaypoint from "./ProjectWaypoint";
+import FlagshipWaypoint from "./FlagshipWaypoint";
 import MoreWaypoint from "./MoreWaypoint";
 import ContactWaypoint from "./ContactWaypoint";
 
@@ -41,6 +42,7 @@ export default function Experience() {
           {featuredProjects.map((project, i) => {
             const stop = STOPS.find((s) => s.kind === "project" && s.projectIndex === i);
             if (!stop) return null;
+            if (project.flagship) return <FlagshipWaypoint key={project.id} project={project} stop={stop} />;
             return <ProjectWaypoint key={project.id} project={project} stop={stop} />;
           })}
           <MoreWaypoint />

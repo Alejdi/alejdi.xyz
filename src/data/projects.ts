@@ -18,9 +18,170 @@ export type Project = {
   draft?: boolean;
   /** Path under /public to a concept/preview image. Falls back to the procedural treatment if missing. */
   previewImage?: string;
+  /** The headline project: a pinned, scroll-told stop and a full case study instead of the standard card. */
+  flagship?: Flagship;
+};
+
+export type FlagshipStat = {
+  value: number;
+  /** Appended after the counted number, e.g. "k" or "+". */
+  suffix?: string;
+  label: string;
+};
+
+export type FlagshipStep = {
+  title: string;
+  body: string;
+};
+
+export type FlagshipVideoSource = {
+  /** Path under /public, e.g. "/videos/preventiv-16x9.mp4". */
+  src: string;
+  /** Still frame shown before playback, path under /public. */
+  poster?: string;
+};
+
+export type Flagship = {
+  /** One line under the name on the scroll stop. */
+  pitch: string;
+  /** Count-up figures, all taken from the product and its repository. */
+  stats: FlagshipStat[];
+  /** "How it works" — told in sync with the particle story while the stop is pinned. */
+  steps: FlagshipStep[];
+  /** The things most visitors never notice: shown in the case study's "Under the hood" tab. */
+  details: { title: string; body: string }[];
+  /** Key/value rows for the spec sheet. */
+  spec: { label: string; value: string }[];
+  /** The product's own embeddable demo, shown in the "Try it live" tab. */
+  demo?: { url: string; note: string };
+  /**
+   * Explainer film. Landscape plays on desktop and tablets in landscape,
+   * portrait on phones; either one alone is used everywhere. Leave empty
+   * until the files exist — the Film tab only appears once a source is set.
+   */
+  video?: {
+    landscape?: FlagshipVideoSource;
+    portrait?: FlagshipVideoSource;
+    /**
+     * WebVTT captions, path under /public. The film's text is burned in, so the
+     * track is offered but off by default (it would print every line twice).
+     */
+    captions?: string;
+    /** Length in seconds, shown before the metadata has loaded. */
+    duration?: number;
+    /**
+     * Scenes of the edit, in order, starting at 0. They drive the chapter rail
+     * under the player and the transcript screen readers get. `index` mirrors
+     * the "03/08" counter burned into the film; intro and credits have none.
+     */
+    chapters?: FlagshipChapter[];
+  };
+};
+
+export type FlagshipChapter = {
+  /** Seconds from the start, where the scene's entrance begins. */
+  start: number;
+  title: string;
+  /** The line under the title on screen, for the transcript. */
+  line?: string;
+  index?: number;
 };
 
 export const projects: Project[] = [
+  {
+    id: "preventiv",
+    name: "Preventiv",
+    tagline: "Quotes, estimates and invoicing for any business.",
+    description:
+      "A SaaS that takes a business from the first price to the paid invoice. Pick one of 38 industries and start from a ready price list written in your trade's own words, build the estimate in a keyboard-first grid, then send a branded PDF or a link the client opens on their phone, picks options on and accepts online. The accepted offer becomes invoices with the right tax for Albania (TVSH, NIPT, fiscalisation) or Italy (IVA, split payment, FatturaPA). Every amount in the editor, the PDF, the Excel file, the API and the website widget comes from one decimal calculation engine, so the totals always add up to the cent.",
+    role: "Founder / Full-Stack Developer",
+    status: "live",
+    statusLabel: "Public beta",
+    tech: ["Next.js", "TypeScript", "Supabase", "PostgreSQL", "Stripe", "Web Components", "Playwright"],
+    year: "2026",
+    accent: "#e8561c",
+    url: "https://preventiv.app/en",
+    featured: true,
+    flagship: {
+      pitch: "From the first price to the paid invoice, for businesses in Albania and Italy.",
+      stats: [
+        { value: 38, label: "Industries" },
+        { value: 219, suffix: "k", label: "Lines of TypeScript" },
+        { value: 2000, suffix: "+", label: "Automated tests" },
+      ],
+      steps: [
+        {
+          title: "Pick your industry",
+          body: "38 industries, each with its own starter price list, templates, units and wording, from construction to weddings to software.",
+        },
+        {
+          title: "Build the estimate",
+          body: "A keyboard-first grid: quantities, formulas, options and alternatives. Overhead, discounts and VAT are applied in the right order, to the cent.",
+        },
+        {
+          title: "Send, sign, bill",
+          body: "The client opens a link on their phone, ticks the options they want and signs. Then it becomes invoices: at once, by milestone or monthly.",
+        },
+      ],
+      details: [
+        {
+          title: "One engine for every number",
+          body: "@preventiv/calc is a pure TypeScript engine on decimal arithmetic. The grid, the PDF, the Excel export, the REST API and the website widget all call it, so a total can never differ between two places.",
+        },
+        {
+          title: "AI that can't invent a price",
+          body: "Describe a job, add photos, and the AI drafts the estimate. It splits the work into items and does the measurements, but it never sees a price: it can only pick rows from your own price list through a search tool, and anything it can't match comes back unpriced.",
+        },
+        {
+          title: "The client chooses, the engine recalculates",
+          body: "Mark items optional or group alternatives. On the share link the client ticks what they want, and the totals, VAT included, are recalculated live by the same engine that prints the PDF.",
+        },
+        {
+          title: "Two tax systems, built in",
+          body: "Italy: IVA at 22/10/4%, split payment, reverse charge, ritenuta d'acconto and FatturaPA XML for the SdI. Albania: TVSH 20/6%, NIPT on every document and the NIVF/NSLF fiscalisation fields.",
+        },
+        {
+          title: "An estimator for any website",
+          body: "A <preventiv-estimator> web component and a WordPress plugin. Visitors answer a few questions, get a priced estimate, and every request lands in the CRM as a lead with a draft offer.",
+        },
+        {
+          title: "Built to be trusted",
+          body: "A public REST API with a TypeScript SDK and OpenAPI docs, two-factor sign-in, a nonce-based Content Security Policy, bot checks on public forms, and 300 test files plus Playwright end-to-end runs.",
+        },
+      ],
+      spec: [
+        { label: "Industries", value: "38 in 4 groups" },
+        { label: "Languages", value: "Albanian · Italian · English" },
+        { label: "Currencies", value: "Lek · EUR" },
+        { label: "Outputs", value: "PDF · Excel · XPWE · CSV · XML" },
+        { label: "Taxes", value: "TVSH · IVA · split payment · reverse charge" },
+        { label: "Surface", value: "100+ screens · 60+ API routes" },
+        { label: "Stack", value: "Next.js · Supabase · Stripe" },
+      ],
+      demo: {
+        url: "https://preventiv.app/e/edilizia-brera/cb444cc2-6166-56d9-9278-a5c26d1729e2?embed=1&lang=en",
+        note: "The real estimator of Preventiv's demo company, running live. Prices are indicative and no request reaches a real business.",
+      },
+      video: {
+        landscape: { src: "/videos/preventiv-16x9.mp4", poster: "/videos/preventiv-16x9.jpg" },
+        portrait: { src: "/videos/preventiv-9x16.mp4", poster: "/videos/preventiv-9x16.jpg" },
+        captions: "/videos/preventiv.vtt",
+        duration: 62,
+        chapters: [
+          { start: 0, title: "Preventiv", line: "Quotes, offers & invoicing for any business." },
+          { start: 5, index: 1, title: "The problem", line: "Most small businesses still quote with spreadsheets, handwritten notes and WhatsApp photos." },
+          { start: 11, index: 2, title: "Pick your trade", line: "38 industries, each with a ready-made price list." },
+          { start: 17, index: 3, title: "Estimate in minutes", line: "One engine, two tax systems: Albania and Italy." },
+          { start: 25, index: 4, title: "Branded PDF offers", line: "Generated instantly, in the client's language." },
+          { start: 31, index: 5, title: "Accept online", line: "Clients choose options, see live totals and sign electronically." },
+          { start: 38, index: 6, title: "Bill in stages", line: "Advance, progress bills and final, with e-invoice export." },
+          { start: 44, index: 7, title: "Website calculator", line: "Visitors price their job on your site, you get the lead." },
+          { start: 49, index: 8, title: "Under the hood", line: "Designed and engineered end to end." },
+          { start: 56, title: "Credits", line: "Designed & built by Alejdi · alejdi.xyz" },
+        ],
+      },
+    },
+  },
   {
     id: "ai-training",
     name: "AI Model Training & Evaluation",

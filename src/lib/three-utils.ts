@@ -1,5 +1,5 @@
 import type { Camera } from "three";
-import { PAGE_DEPTH, stopCenterZ, type Stop } from "@/data/journey";
+import { PAGE_DEPTH, stopDistance, type Stop } from "@/data/journey";
 
 export function clamp(v: number, min = 0, max = 1) {
   return Math.min(max, Math.max(min, v));
@@ -10,11 +10,10 @@ export function smoothstep(edge0: number, edge1: number, x: number) {
   return t * t * (3 - 2 * t);
 }
 
-/** 0-1 visibility for a stop based on how close the camera is to its center. */
+/** 0-1 visibility for a stop based on how close the camera is to it (fully visible through a hold). */
 export function stopVisibility(camera: Camera, stop: Stop, spread = 0.62) {
-  const center = stopCenterZ(stop);
   const halfWindow = stop.length * PAGE_DEPTH * spread;
-  const dist = Math.abs(camera.position.z - center);
+  const dist = stopDistance(camera.position.z, stop);
   return 1 - smoothstep(halfWindow * 0.35, halfWindow, dist);
 }
 

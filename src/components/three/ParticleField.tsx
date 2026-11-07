@@ -3,7 +3,8 @@
 import { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { STOPS, stopCenterZ, VIEW_DEPTH, type Stop } from "@/data/journey";
+import { STOPS, stopDistance, stopProgress, VIEW_DEPTH, type Stop } from "@/data/journey";
+import { beatFor, flagshipShapeLayout } from "@/lib/flagship";
 import { projects } from "@/data/projects";
 import { profile } from "@/data/profile";
 import { mulberry32 } from "@/lib/three-utils";
@@ -24,7 +25,8 @@ function metaForStop(stop: Stop): StopMeta {
     const side = (stop.projectIndex ?? 0) % 2 === 0 ? 1 : -1;
     return {
       color: PROJECT_ACCENTS.get(stop.key) ?? "#8b7bff",
-      x: side * 2.2,
+      // the flagship's card is wider, so its shape sits further out
+      x: side * (stop.hold ? 2.55 : 2.2),
       zExtra: 0,
       dim: 1,
       // icons stay mostly face-on so they read; gentle breathing only
@@ -226,18 +228,21 @@ export default function ParticleField() {
     let best: Stop = STOPS[0];
     let bestDist = Infinity;
     for (const stop of STOPS) {
-      const dist = Math.abs(stopCenterZ(stop) - camZ);
+      const dist = stopDistance(camZ, stop);
       if (dist < bestDist) {
         bestDist = dist;
         best = stop;
       }
     }
 
-    if (best.key !== st.activeKey) {
-      st.activeKey = best.key;
+    // pinned stops tell a story: the shape follows the beat of the hold
+    const shapeKey = best.hold ? `${best.key}#${beatFor(stopProgress(camZ, best))}` : best.key;
+
+    if (shapeKey !== st.activeKey) {
+      st.activeKey = shapeKey;
       const meta = metaForStop(best);
       const framed = best.kind === "project" && hasArt(best.key);
-      const target = framed ? frameShape(COUNT) : shapeForStop(best.key, HERO_TEXT, COUNT);
+      const target = framed ? frameShape(COUNT) : shapeForStop(shapeKey, HERO_TEXT, COUNT);
 
       // bake current interpolated positions into the from-buffer, then aim at the new shape
       const m = st.morph;
@@ -282,12 +287,22 @@ export default function ParticleField() {
     // follow the camera; glide sideways toward the stop's slot.
     // Mobile: shape lives centered in the upper third, text takes the lower half.
     const mobile = s < 1;
-    const targetX = mobile ? 0 : meta.x * s;
+    let targetX = mobile ? 0 : meta.x * s;
+    let desktopScale = 1;
+    if (best.hold && !mobile) {
+      const fov = (state.camera as THREE.PerspectiveCamera).fov;
+      const layout = flagshipShapeLayout(state.size.width, state.size.height, fov, VIEW_DEPTH);
+      targetX = Math.sign(meta.x) * layout.x;
+      desktopScale = layout.scale;
+    }
     const glide = 1 - Math.pow(0.002, delta);
     group.current.position.x += (targetX - group.current.position.x) * glide;
-    group.current.position.y = mobile ? 1.32 : 0;
+    const targetY = mobile ? (best.hold ? 1.42 : 1.32) : 0;
+    group.current.position.y += (targetY - group.current.position.y) * glide;
     group.current.position.z = camZ - VIEW_DEPTH + (mobile ? meta.zExtra * 0.4 - 0.6 : meta.zExtra);
-    group.current.scale.setScalar(mobile ? 0.58 : 1);
+    // the flagship's story shapes are taller than the icons, so they shrink a little more on phones
+    const targetScale = mobile ? (best.hold ? 0.5 : 0.58) : desktopScale;
+    group.current.scale.setScalar(group.current.scale.x + (targetScale - group.current.scale.x) * glide);
 
     // gentle oscillating spin — amplitude tuned per shape so glyphs stay readable
     st.spinPhase += delta * st.spinSpeed;

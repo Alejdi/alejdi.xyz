@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, X } from "lucide-react";
 import type { Project } from "@/data/projects";
 import ProjectPreview from "./ProjectPreview";
+import FlagshipCaseStudy from "./FlagshipCaseStudy";
 import { GithubIcon } from "./icons";
 
 const STATUS_DOT: Record<Project["status"], string> = {
@@ -37,7 +38,7 @@ export default function ProjectModal({
     <AnimatePresence>
       {project && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
+          className={`fixed inset-0 z-100 flex items-center justify-center ${project.flagship ? "p-2 md:p-6 squat:p-2" : "p-4 md:p-8"}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -48,6 +49,20 @@ export default function ProjectModal({
             onClick={onClose}
           />
 
+          {project.flagship ? (
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${project.name} case study`}
+              initial={{ opacity: 0, y: 24, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 16, scale: 0.98 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="relative z-10 h-[calc(100svh-1rem)] w-full max-w-6xl overflow-hidden rounded-2xl border border-line bg-ink-raised shadow-2xl md:h-[min(90svh,880px)] squat:h-[calc(100svh-1rem)]"
+            >
+              <FlagshipCaseStudy project={project} onClose={onClose} />
+            </motion.div>
+          ) : (
           <motion.div
             role="dialog"
             aria-modal="true"
@@ -132,6 +147,7 @@ export default function ProjectModal({
               </div>
             </div>
           </motion.div>
+          )}
         </motion.div>
       )}
     </AnimatePresence>

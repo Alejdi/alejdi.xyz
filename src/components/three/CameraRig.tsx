@@ -30,7 +30,9 @@ export default function CameraRig() {
     targetZ.current = -smoothed.current * PAGES * PAGE_DEPTH;
     camera.position.set(0, 0, targetZ.current);
     camera.lookAt(0, 0, targetZ.current - 9);
-  });
+    // Negative priority: the camera settles before anything that reads it —
+    // pinned stops position themselves from it before drei's <Html> projects.
+  }, -2);
 
   return null;
 }
